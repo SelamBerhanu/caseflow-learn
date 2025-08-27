@@ -6,17 +6,30 @@ export const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isDashboard = location.pathname.includes('dashboard');
+  const isStudentArea = location.pathname.includes('student');
+  const isEvaluatorArea = location.pathname.includes('evaluator');
+  
+  // Simulate logged in state based on being in dashboard/auth areas
+  const isLoggedIn = isDashboard || location.pathname.includes('-auth');
 
   const handleLogout = () => {
     navigate('/');
   };
 
-  const handleBackToDashboard = () => {
-    if (location.pathname.includes('student')) {
-      navigate('/student-dashboard');
-    } else if (location.pathname.includes('evaluator')) {
-      navigate('/evaluator-dashboard');
-    }
+  const handleStudentSubmission = () => {
+    navigate('/student-dashboard?tab=submit');
+  };
+
+  const handleStudentBrowse = () => {
+    navigate('/student-dashboard?tab=browse');
+  };
+
+  const handleEvaluatorReviews = () => {
+    navigate('/evaluator-dashboard?tab=pending');
+  };
+
+  const handleEvaluatorStats = () => {
+    navigate('/evaluator-dashboard?tab=evaluations');
   };
 
   return (
@@ -29,11 +42,49 @@ export const Navigation = () => {
           </div>
           
           <div className="flex items-center space-x-4">
-            {isDashboard ? (
+            {!isLoggedIn ? (
+              // Show joining options for people without accounts
               <>
-                <Button variant="ghost" size="sm" onClick={handleBackToDashboard}>
-                  <Home className="h-4 w-4 mr-2" />
-                  Dashboard
+                <Button variant="ghost" size="sm">
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+                <Button variant="default" size="sm">
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Get Started
+                </Button>
+              </>
+            ) : isDashboard ? (
+              // Show logout for dashboard pages
+              <Button variant="outline" size="sm" onClick={handleLogout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            ) : isStudentArea ? (
+              // Show student features
+              <>
+                <Button variant="ghost" size="sm" onClick={handleStudentSubmission}>
+                  Easy Submission
+                </Button>
+                <Button variant="ghost" size="sm" onClick={handleStudentBrowse}>
+                  Expert Feedback
+                </Button>
+                <Button variant="ghost" size="sm" onClick={handleStudentBrowse}>
+                  Smart Filtering
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleLogout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </>
+            ) : isEvaluatorArea ? (
+              // Show evaluator features
+              <>
+                <Button variant="ghost" size="sm" onClick={handleEvaluatorReviews}>
+                  Review Reports
+                </Button>
+                <Button variant="ghost" size="sm" onClick={handleEvaluatorStats}>
+                  My Evaluations
                 </Button>
                 <Button variant="outline" size="sm" onClick={handleLogout}>
                   <LogOut className="h-4 w-4 mr-2" />
@@ -41,6 +92,7 @@ export const Navigation = () => {
                 </Button>
               </>
             ) : (
+              // Fallback to joining options
               <>
                 <Button variant="ghost" size="sm">
                   <LogIn className="h-4 w-4 mr-2" />
