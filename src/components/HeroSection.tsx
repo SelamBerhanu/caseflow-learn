@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, FileText, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const HeroSection = () => {
   return (
@@ -16,14 +17,18 @@ export const HeroSection = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 transform hover:scale-105">
-              <Users className="h-5 w-5 mr-2" />
-              Join as Student
-              <ArrowRight className="h-5 w-5 ml-2" />
+            <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 transform hover:scale-105">
+              <Link to="/student-auth">
+                <Users className="h-5 w-5 mr-2" />
+                Join as Student
+                <ArrowRight className="h-5 w-5 ml-2" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary-light transition-all duration-300">
-              <FileText className="h-5 w-5 mr-2" />
-              Join as Evaluator
+            <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary-light transition-all duration-300">
+              <Link to="/evaluator-auth">
+                <FileText className="h-5 w-5 mr-2" />
+                Join as Evaluator
+              </Link>
             </Button>
           </div>
         </div>

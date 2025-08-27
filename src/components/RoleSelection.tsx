@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Stethoscope, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const RoleSelection = () => {
   return (
@@ -32,9 +33,11 @@ export const RoleSelection = () => {
                 <li>• Rate and learn from peer submissions</li>
                 <li>• Track your learning progress</li>
               </ul>
-              <Button className="w-full bg-gradient-to-r from-primary to-primary/80 hover:opacity-90">
-                Join as Student
-                <ArrowRight className="h-4 w-4 ml-2" />
+              <Button asChild className="w-full bg-gradient-to-r from-primary to-primary/80 hover:opacity-90">
+                <Link to="/student-auth">
+                  Join as Student
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -57,9 +60,11 @@ export const RoleSelection = () => {
                 <li>• Track your teaching impact</li>
                 <li>• Connect with medical institutions</li>
               </ul>
-              <Button className="w-full bg-gradient-to-r from-accent to-accent/80 hover:opacity-90">
-                Join as Evaluator
-                <ArrowRight className="h-4 w-4 ml-2" />
+              <Button asChild className="w-full bg-gradient-to-r from-accent to-accent/80 hover:opacity-90">
+                <Link to="/evaluator-auth">
+                  Join as Evaluator
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Link>
               </Button>
             </CardContent>
           </Card>
