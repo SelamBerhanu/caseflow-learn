@@ -35,11 +35,31 @@ const recommendedTopics = [
   { id: 'cardiology', name: 'Cardiology Cases', pending: 5, progress: 80 }
 ];
 
+const casesByTopic = {
+  emergency: [
+    { id: 'e1', title: 'Acute Myocardial Infarction in ER', department: 'Emergency Medicine', submittedBy: 'Dr. Sarah Wilson', submittedDate: '2 hours ago', priority: 'high' },
+    { id: 'e2', title: 'Severe Trauma Case Management', department: 'Emergency Medicine', submittedBy: 'Dr. Mike Chen', submittedDate: '4 hours ago', priority: 'high' },
+    { id: 'e3', title: 'Drug Overdose Treatment Protocol', department: 'Emergency Medicine', submittedBy: 'Dr. Lisa Park', submittedDate: '6 hours ago', priority: 'medium' }
+  ],
+  pediatric: [
+    { id: 'p1', title: 'Pediatric Asthma Management', department: 'Pediatrics', submittedBy: 'Dr. Emma Davis', submittedDate: '1 day ago', priority: 'medium' },
+    { id: 'p2', title: 'Childhood Diabetes Case Study', department: 'Pediatrics', submittedBy: 'Dr. James Liu', submittedDate: '2 days ago', priority: 'medium' },
+    { id: 'p3', title: 'Rare Genetic Disorder Diagnosis', department: 'Pediatrics', submittedBy: 'Dr. Amy Rodriguez', submittedDate: '3 days ago', priority: 'high' }
+  ],
+  cardiology: [
+    { id: 'c1', title: 'Complex Arrhythmia Treatment', department: 'Cardiology', submittedBy: 'Dr. Robert Kim', submittedDate: '1 day ago', priority: 'high' },
+    { id: 'c2', title: 'Heart Failure Case Management', department: 'Cardiology', submittedBy: 'Dr. Nina Patel', submittedDate: '2 days ago', priority: 'medium' },
+    { id: 'c3', title: 'Post-Surgical Cardiac Care', department: 'Cardiology', submittedBy: 'Dr. Tom Zhang', submittedDate: '4 days ago', priority: 'medium' }
+  ]
+};
+
 export default function EvaluatorDashboard() {
   const [activeTab, setActiveTab] = useState("pending");
   const [selectedReport, setSelectedReport] = useState<any>(null);
   const [evaluation, setEvaluation] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [acceptedTopics, setAcceptedTopics] = useState<string[]>([]);
+  const [showTopicCases, setShowTopicCases] = useState(false);
 
   const handleEvaluate = (report: any) => {
     setSelectedReport(report);
@@ -61,9 +81,20 @@ export default function EvaluatorDashboard() {
   };
 
   const handleAcceptSelected = () => {
-    console.log("Accepting selected topics:", selectedTopics);
-    // Handle accepting selected topics logic here
+    setAcceptedTopics([...selectedTopics]);
+    setShowTopicCases(true);
     setSelectedTopics([]);
+  };
+
+  // Get cases for accepted topics
+  const getAcceptedTopicCases = () => {
+    let allCases: any[] = [];
+    acceptedTopics.forEach(topicId => {
+      if (casesByTopic[topicId as keyof typeof casesByTopic]) {
+        allCases = [...allCases, ...casesByTopic[topicId as keyof typeof casesByTopic]];
+      }
+    });
+    return allCases;
   };
 
   return (
@@ -314,6 +345,45 @@ export default function EvaluatorDashboard() {
                       <Button onClick={handleAcceptSelected}>
                         Accept Selected
                       </Button>
+                    </div>
+                  )}
+
+                  {showTopicCases && acceptedTopics.length > 0 && (
+                    <div className="mt-8 pt-6 border-t border-border">
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-semibold">Cases for Selected Topics</h3>
+                        <Button variant="outline" size="sm" onClick={() => setShowTopicCases(false)}>
+                          Close
+                        </Button>
+                      </div>
+                      <div className="space-y-4">
+                        {getAcceptedTopicCases().map((case_item) => (
+                          <Card key={case_item.id} className="border border-border hover:border-accent/40 transition-colors">
+                            <CardContent className="p-6">
+                              <div className="flex justify-between items-start mb-4">
+                                <div>
+                                  <h4 className="text-lg font-semibold mb-2">{case_item.title}</h4>
+                                  <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                                    <span>{case_item.department}</span>
+                                    <span>•</span>
+                                    <span>Submitted by: {case_item.submittedBy}</span>
+                                    <span>•</span>
+                                    <span>{case_item.submittedDate}</span>
+                                  </div>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <Badge variant={case_item.priority === 'high' ? 'destructive' : 'secondary'}>
+                                    {case_item.priority} priority
+                                  </Badge>
+                                  <Button onClick={() => handleEvaluate(case_item)}>
+                                    Start Evaluation
+                                  </Button>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </CardContent>
