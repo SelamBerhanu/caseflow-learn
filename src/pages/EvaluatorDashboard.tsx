@@ -5,7 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { FileText, CheckCircle, Clock, TrendingUp, Award, MessageSquare } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FileText, CheckCircle, Clock, TrendingUp, Award, MessageSquare, Download } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 
 const pendingReports = [
@@ -114,48 +115,94 @@ export default function EvaluatorDashboard() {
 
             <TabsContent value="pending" className="space-y-6">
               {selectedReport ? (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <MessageSquare className="h-5 w-5 mr-2" />
-                      Evaluate Report: {selectedReport.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="bg-muted p-4 rounded-lg">
-                      <h4 className="font-medium mb-2">Case Report Details</h4>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-muted-foreground">Department:</span>
-                          <span className="ml-2 font-medium">{selectedReport.department}</span>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">Submitted:</span>
-                          <span className="ml-2 font-medium">{selectedReport.submittedDate}</span>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Left side - Uploaded Paper */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <FileText className="h-5 w-5 mr-2" />
+                        Uploaded Paper: {selectedReport.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="bg-muted p-4 rounded-lg">
+                        <h4 className="font-medium mb-3">Case Report Details</h4>
+                        <div className="grid grid-cols-1 gap-3 text-sm">
+                          <div>
+                            <span className="text-muted-foreground">Department:</span>
+                            <span className="ml-2 font-medium">{selectedReport.department}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Submitted:</span>
+                            <span className="ml-2 font-medium">{selectedReport.submittedDate}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Submitted by:</span>
+                            <span className="ml-2 font-medium">{selectedReport.submittedBy}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                      
+                      {/* Paper Preview/Content Area */}
+                      <div className="border-2 border-dashed border-border rounded-lg p-6 min-h-[400px] bg-background">
+                        <div className="text-center text-muted-foreground">
+                          <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                          <p className="text-lg font-medium mb-2">Case Report Document</p>
+                          <p className="text-sm">Paper content would be displayed here</p>
+                          <Button variant="outline" className="mt-4">
+                            <Download className="h-4 w-4 mr-2" />
+                            Download PDF
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Your Evaluation & Feedback</label>
-                      <Textarea
-                        value={evaluation}
-                        onChange={(e) => setEvaluation(e.target.value)}
-                        placeholder="Provide detailed evaluation, feedback, and educational insights for this case report..."
-                        className="min-h-[200px]"
-                      />
-                    </div>
+                  {/* Right side - Evaluator's Feedback + Decision */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <MessageSquare className="h-5 w-5 mr-2" />
+                        Evaluation & Feedback
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Your Evaluation & Feedback</label>
+                        <Textarea
+                          value={evaluation}
+                          onChange={(e) => setEvaluation(e.target.value)}
+                          placeholder="Provide detailed evaluation, feedback, and educational insights for this case report..."
+                          className="min-h-[300px]"
+                        />
+                      </div>
 
-                    <div className="flex space-x-4">
-                      <Button onClick={handleSubmitEvaluation} disabled={!evaluation.trim()}>
-                        Submit Evaluation
-                      </Button>
-                      <Button variant="outline" onClick={() => setSelectedReport(null)}>
-                        Cancel
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Decision</label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select evaluation decision" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="approved">Approve - Excellent work</SelectItem>
+                            <SelectItem value="approved-minor">Approve with minor revisions</SelectItem>
+                            <SelectItem value="revisions">Major revisions required</SelectItem>
+                            <SelectItem value="rejected">Reject - Needs significant improvement</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="flex flex-col space-y-4 pt-4">
+                        <Button onClick={handleSubmitEvaluation} disabled={!evaluation.trim()}>
+                          Submit Evaluation
+                        </Button>
+                        <Button variant="outline" onClick={() => setSelectedReport(null)}>
+                          Cancel
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               ) : (
                 <div className="space-y-4">
                   {pendingReports.map((report) => (
