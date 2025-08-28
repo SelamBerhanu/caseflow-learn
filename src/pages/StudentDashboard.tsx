@@ -170,17 +170,13 @@ export default function StudentDashboard() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Report Title</Label>
-                    <Input id="title" placeholder="Enter a descriptive title for your case report" />
+                    <Label htmlFor="university">University</Label>
+                    <Input id="university" placeholder="Enter your university name" />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="description">Case Description</Label>
-                    <Textarea 
-                      id="description" 
-                      placeholder="Provide a brief description of the case..."
-                      className="min-h-[100px]"
-                    />
+                    <Label htmlFor="topic">Topic</Label>
+                    <Input id="topic" placeholder="Enter the case topic or subject" />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
