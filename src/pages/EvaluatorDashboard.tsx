@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { FileText, CheckCircle, Clock, TrendingUp, Award, MessageSquare, Download } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 
@@ -28,10 +29,17 @@ const pendingReports = [
   }
 ];
 
+const recommendedTopics = [
+  { id: 'emergency', name: 'Emergency Medicine Cases', pending: 12, progress: 30 },
+  { id: 'pediatric', name: 'Pediatric Cases', pending: 8, progress: 60 },
+  { id: 'cardiology', name: 'Cardiology Cases', pending: 5, progress: 80 }
+];
+
 export default function EvaluatorDashboard() {
   const [activeTab, setActiveTab] = useState("pending");
   const [selectedReport, setSelectedReport] = useState<any>(null);
   const [evaluation, setEvaluation] = useState("");
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
   const handleEvaluate = (report: any) => {
     setSelectedReport(report);
@@ -42,6 +50,20 @@ export default function EvaluatorDashboard() {
     console.log("Submitting evaluation for:", selectedReport, evaluation);
     setSelectedReport(null);
     setEvaluation("");
+  };
+
+  const handleTopicSelection = (topicId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedTopics([...selectedTopics, topicId]);
+    } else {
+      setSelectedTopics(selectedTopics.filter(id => id !== topicId));
+    }
+  };
+
+  const handleAcceptSelected = () => {
+    console.log("Accepting selected topics:", selectedTopics);
+    // Handle accepting selected topics logic here
+    setSelectedTopics([]);
   };
 
   return (
@@ -262,40 +284,38 @@ export default function EvaluatorDashboard() {
                     Based on current submissions and your expertise, these topics need more evaluator attention:
                   </p>
                   
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="font-medium">Emergency Medicine Cases</h4>
-                        <p className="text-sm text-muted-foreground">12 pending evaluations</p>
+                  <div className="space-y-4 mb-6">
+                    {recommendedTopics.map((topic) => (
+                      <div key={topic.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <Checkbox 
+                            id={topic.id}
+                            checked={selectedTopics.includes(topic.id)}
+                            onCheckedChange={(checked) => handleTopicSelection(topic.id, checked as boolean)}
+                          />
+                          <div>
+                            <h4 className="font-medium">{topic.name}</h4>
+                            <p className="text-sm text-muted-foreground">{topic.pending} pending evaluations</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Progress value={topic.progress} className="w-24 mb-1" />
+                          <p className="text-xs text-muted-foreground">{topic.progress}% evaluated</p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <Progress value={30} className="w-24 mb-1" />
-                        <p className="text-xs text-muted-foreground">30% evaluated</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="font-medium">Pediatric Cases</h4>
-                        <p className="text-sm text-muted-foreground">8 pending evaluations</p>
-                      </div>
-                      <div className="text-right">
-                        <Progress value={60} className="w-24 mb-1" />
-                        <p className="text-xs text-muted-foreground">60% evaluated</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="font-medium">Cardiology Cases</h4>
-                        <p className="text-sm text-muted-foreground">5 pending evaluations</p>
-                      </div>
-                      <div className="text-right">
-                        <Progress value={80} className="w-24 mb-1" />
-                        <p className="text-xs text-muted-foreground">80% evaluated</p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
+
+                  {selectedTopics.length > 0 && (
+                    <div className="flex justify-between items-center pt-4 border-t border-border">
+                      <p className="text-sm text-muted-foreground">
+                        {selectedTopics.length} topic{selectedTopics.length > 1 ? 's' : ''} selected
+                      </p>
+                      <Button onClick={handleAcceptSelected}>
+                        Accept Selected
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
