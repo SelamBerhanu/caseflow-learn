@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { GraduationCap, UserPlus, LogIn, LogOut, Home } from "lucide-react";
+import { GraduationCap, UserPlus, LogIn, LogOut, Home, ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const Navigation = () => {
@@ -32,11 +32,23 @@ export const Navigation = () => {
     navigate('/evaluator-dashboard?tab=evaluations');
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  const isHomePage = location.pathname === '/';
+
   return (
     <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-md border-b border-border z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-2">
+            {!isHomePage && (
+              <Button variant="ghost" size="sm" onClick={handleBack} className="mr-2">
+                <ArrowLeft className="h-4 w-4 mr-1" />
+                Back
+              </Button>
+            )}
             <GraduationCap className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold text-foreground">CaseFlow Learn</span>
           </div>
