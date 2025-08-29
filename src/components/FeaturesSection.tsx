@@ -7,8 +7,61 @@ import {
   Shield, 
   BookOpen 
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import { User } from "@supabase/supabase-js";
 
 export const FeaturesSection = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleFeatureClick = (featureTitle: string) => {
+    if (!user) {
+      // If not authenticated, redirect to appropriate auth page
+      if (featureTitle === "Easy Submission" || featureTitle === "Expert Feedback" || featureTitle === "Smart Filtering") {
+        navigate("/student-auth");
+      } else {
+        navigate("/evaluator-auth");
+      }
+      return;
+    }
+
+    // If authenticated, redirect to dashboard with the feature action
+    switch (featureTitle) {
+      case "Easy Submission":
+        navigate("/student-dashboard");
+        break;
+      case "Expert Feedback":
+      case "Smart Filtering":
+        navigate("/student-dashboard");
+        break;
+      case "Review Cases":
+        navigate("/evaluator-dashboard");
+        break;
+      case "Track Impact":
+      case "Professional Profile":
+        navigate("/evaluator-dashboard");
+        break;
+      default:
+        break;
+    }
+  };
+
   const studentFeatures = [
     {
       icon: Upload,
@@ -59,7 +112,11 @@ export const FeaturesSection = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {studentFeatures.map((feature, index) => (
-              <Card key={index} className="border-border bg-card hover:shadow-lg transition-all duration-300 hover:transform hover:-translate-y-2">
+              <Card 
+                key={index} 
+                className="border-border bg-card hover:shadow-lg transition-all duration-300 hover:transform hover:-translate-y-2 cursor-pointer"
+                onClick={() => handleFeatureClick(feature.title)}
+              >
                 <CardHeader className="text-center pb-4">
                   <div className="mx-auto mb-4 p-3 rounded-full bg-primary-light">
                     <feature.icon className="h-8 w-8 text-primary" />
@@ -85,7 +142,11 @@ export const FeaturesSection = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {evaluatorFeatures.map((feature, index) => (
-              <Card key={index} className="border-border bg-card hover:shadow-lg transition-all duration-300 hover:transform hover:-translate-y-2">
+              <Card 
+                key={index} 
+                className="border-border bg-card hover:shadow-lg transition-all duration-300 hover:transform hover:-translate-y-2 cursor-pointer"
+                onClick={() => handleFeatureClick(feature.title)}
+              >
                 <CardHeader className="text-center pb-4">
                   <div className="mx-auto mb-4 p-3 rounded-full bg-accent-light">
                     <feature.icon className="h-8 w-8 text-accent" />
