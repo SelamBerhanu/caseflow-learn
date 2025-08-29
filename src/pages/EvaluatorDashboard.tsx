@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileText, CheckCircle, Clock, TrendingUp, Award, MessageSquare, Download } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 
@@ -168,93 +170,151 @@ export default function EvaluatorDashboard() {
 
             <TabsContent value="pending" className="space-y-6">
               {selectedReport ? (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Left side - Uploaded Paper */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <FileText className="h-5 w-5 mr-2" />
-                        Uploaded Paper: {selectedReport.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="bg-muted p-4 rounded-lg">
-                        <h4 className="font-medium mb-3">Case Report Details</h4>
-                        <div className="grid grid-cols-1 gap-3 text-sm">
-                          <div>
-                            <span className="text-muted-foreground">Department:</span>
-                            <span className="ml-2 font-medium">{selectedReport.department}</span>
+                <div className="h-[calc(100vh-300px)]">
+                  <ResizablePanelGroup direction="horizontal" className="border rounded-lg">
+                    {/* Left Panel - Case Report Document */}
+                    <ResizablePanel defaultSize={50} minSize={30}>
+                      <div className="h-full flex flex-col">
+                        <div className="border-b p-4">
+                          <div className="flex items-center mb-2">
+                            <FileText className="h-5 w-5 mr-2" />
+                            <h3 className="font-semibold">{selectedReport.title}</h3>
                           </div>
-                          <div>
-                            <span className="text-muted-foreground">Submitted:</span>
-                            <span className="ml-2 font-medium">{selectedReport.submittedDate}</span>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Submitted by:</span>
-                            <span className="ml-2 font-medium">{selectedReport.submittedBy}</span>
+                          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                            <span>{selectedReport.department}</span>
+                            <span>•</span>
+                            <span>{selectedReport.submittedBy}</span>
+                            <span>•</span>
+                            <span>{selectedReport.submittedDate}</span>
                           </div>
                         </div>
+                        
+                        <ScrollArea className="flex-1 p-4">
+                          <div className="space-y-6">
+                            {/* Sample case report content for scrolling demo */}
+                            <div className="prose prose-sm max-w-none">
+                              <h2>Case Presentation</h2>
+                              <p>A 45-year-old male presents to the emergency department with acute onset chest pain that began approximately 2 hours ago while at rest. The patient describes the pain as a crushing sensation in the center of his chest, radiating to his left arm and jaw.</p>
+                              
+                              <h3>Chief Complaint</h3>
+                              <p>"I have severe chest pain that feels like someone is sitting on my chest."</p>
+                              
+                              <h3>History of Present Illness</h3>
+                              <p>The patient was watching television when he suddenly developed severe, crushing chest pain rated 9/10 in intensity. The pain is retrosternal, radiating to the left arm and jaw. Associated symptoms include diaphoresis, nausea, and shortness of breath. The patient denies any recent trauma, fever, or cough. He has no history of similar episodes.</p>
+                              
+                              <h3>Past Medical History</h3>
+                              <ul>
+                                <li>Hypertension (diagnosed 5 years ago)</li>
+                                <li>Type 2 Diabetes Mellitus (diagnosed 3 years ago)</li>
+                                <li>Hyperlipidemia</li>
+                                <li>Former smoker (quit 1 year ago, 20 pack-year history)</li>
+                              </ul>
+                              
+                              <h3>Medications</h3>
+                              <ul>
+                                <li>Lisinopril 10mg daily</li>
+                                <li>Metformin 1000mg twice daily</li>
+                                <li>Atorvastatin 40mg daily</li>
+                              </ul>
+                              
+                              <h3>Physical Examination</h3>
+                              <p><strong>Vital Signs:</strong> BP 160/95, HR 110, RR 22, O2 Sat 94% on room air, Temp 37.2°C</p>
+                              <p><strong>General:</strong> Patient appears anxious and diaphoretic</p>
+                              <p><strong>Cardiovascular:</strong> Tachycardic, regular rhythm, no murmurs, rubs, or gallops</p>
+                              <p><strong>Pulmonary:</strong> Bilateral crackles at lung bases</p>
+                              <p><strong>Abdomen:</strong> Soft, non-tender, no organomegaly</p>
+                              <p><strong>Extremities:</strong> No edema, good peripheral pulses</p>
+                              
+                              <h3>Diagnostic Studies</h3>
+                              <p><strong>ECG:</strong> ST-elevation in leads II, III, aVF with reciprocal changes in leads I and aVL</p>
+                              <p><strong>Chest X-ray:</strong> Mild pulmonary congestion</p>
+                              <p><strong>Laboratory Results:</strong></p>
+                              <ul>
+                                <li>Troponin I: 12.5 ng/mL (normal &lt;0.04)</li>
+                                <li>CK-MB: 85 ng/mL (normal &lt;6.3)</li>
+                                <li>BNP: 450 pg/mL (normal &lt;100)</li>
+                                <li>Complete metabolic panel within normal limits</li>
+                              </ul>
+                              
+                              <h3>Assessment and Plan</h3>
+                              <p><strong>Primary Diagnosis:</strong> ST-elevation myocardial infarction (STEMI) - inferior wall</p>
+                              
+                              <p><strong>Immediate Management:</strong></p>
+                              <ul>
+                                <li>Aspirin 325mg chewed</li>
+                                <li>Clopidogrel 600mg loading dose</li>
+                                <li>Atorvastatin 80mg</li>
+                                <li>Metoprolol 25mg twice daily</li>
+                                <li>Heparin per protocol</li>
+                                <li>Emergency cardiac catheterization</li>
+                              </ul>
+                              
+                              <h3>Hospital Course</h3>
+                              <p>The patient was emergently taken to the cardiac catheterization laboratory where a 99% occlusion of the right coronary artery was identified and successfully treated with percutaneous coronary intervention and drug-eluting stent placement. Post-procedure, the patient's chest pain resolved completely.</p>
+                              
+                              <h3>Discharge Planning</h3>
+                              <p>Patient was discharged on post-procedure day 2 with cardiology follow-up in 1 week. Medications at discharge included dual antiplatelet therapy, ACE inhibitor, beta-blocker, and high-intensity statin therapy.</p>
+                              
+                              <h3>Discussion</h3>
+                              <p>This case illustrates the importance of rapid recognition and treatment of STEMI. The patient's presentation with typical chest pain, ECG changes, and elevated cardiac biomarkers led to prompt diagnosis and successful primary PCI within the recommended time frame.</p>
+                            </div>
+                          </div>
+                        </ScrollArea>
                       </div>
-                      
-                      {/* Paper Preview/Content Area */}
-                      <div className="border-2 border-dashed border-border rounded-lg p-6 min-h-[400px] bg-background">
-                        <div className="text-center text-muted-foreground">
-                          <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                          <p className="text-lg font-medium mb-2">Case Report Document</p>
-                          <p className="text-sm">Paper content would be displayed here</p>
-                          <Button variant="outline" className="mt-4">
-                            <Download className="h-4 w-4 mr-2" />
-                            Download PDF
-                          </Button>
+                    </ResizablePanel>
+                    
+                    <ResizableHandle withHandle />
+                    
+                    {/* Right Panel - Evaluation Form */}
+                    <ResizablePanel defaultSize={50} minSize={30}>
+                      <div className="h-full flex flex-col">
+                        <div className="border-b p-4">
+                          <div className="flex items-center">
+                            <MessageSquare className="h-5 w-5 mr-2" />
+                            <h3 className="font-semibold">Evaluation & Feedback</h3>
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        
+                        <ScrollArea className="flex-1 p-4">
+                          <div className="space-y-6">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Your Evaluation & Feedback</label>
+                              <Textarea
+                                value={evaluation}
+                                onChange={(e) => setEvaluation(e.target.value)}
+                                placeholder="Provide detailed evaluation, feedback, and educational insights for this case report..."
+                                className="min-h-[400px] resize-none"
+                              />
+                            </div>
 
-                  {/* Right side - Evaluator's Feedback + Decision */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <MessageSquare className="h-5 w-5 mr-2" />
-                        Evaluation & Feedback
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Your Evaluation & Feedback</label>
-                        <Textarea
-                          value={evaluation}
-                          onChange={(e) => setEvaluation(e.target.value)}
-                          placeholder="Provide detailed evaluation, feedback, and educational insights for this case report..."
-                          className="min-h-[300px]"
-                        />
-                      </div>
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Decision</label>
+                              <Select>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select evaluation decision" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="approved">Approve - Excellent work</SelectItem>
+                                  <SelectItem value="approved-minor">Approve with minor revisions</SelectItem>
+                                  <SelectItem value="revisions">Major revisions required</SelectItem>
+                                  <SelectItem value="rejected">Reject - Needs significant improvement</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Decision</label>
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select evaluation decision" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="approved">Approve - Excellent work</SelectItem>
-                            <SelectItem value="approved-minor">Approve with minor revisions</SelectItem>
-                            <SelectItem value="revisions">Major revisions required</SelectItem>
-                            <SelectItem value="rejected">Reject - Needs significant improvement</SelectItem>
-                          </SelectContent>
-                        </Select>
+                            <div className="flex flex-col space-y-4 pt-4">
+                              <Button onClick={handleSubmitEvaluation} disabled={!evaluation.trim()}>
+                                Submit Evaluation
+                              </Button>
+                              <Button variant="outline" onClick={() => setSelectedReport(null)}>
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        </ScrollArea>
                       </div>
-
-                      <div className="flex flex-col space-y-4 pt-4">
-                        <Button onClick={handleSubmitEvaluation} disabled={!evaluation.trim()}>
-                          Submit Evaluation
-                        </Button>
-                        <Button variant="outline" onClick={() => setSelectedReport(null)}>
-                          Cancel
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    </ResizablePanel>
+                  </ResizablePanelGroup>
                 </div>
               ) : (
                 <div className="space-y-4">
