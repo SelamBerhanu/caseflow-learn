@@ -220,10 +220,12 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           department: string | null
+          department_id: string | null
           full_name: string | null
           id: string
           role: Database["public"]["Enums"]["user_role"]
           university: string | null
+          university_id: string | null
           updated_at: string
           user_id: string
         }
@@ -231,10 +233,12 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           department?: string | null
+          department_id?: string | null
           full_name?: string | null
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
           university?: string | null
+          university_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -242,14 +246,31 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           department?: string | null
+          department_id?: string | null
           full_name?: string | null
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
           university?: string | null
+          university_id?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_university_id_fkey"
+            columns: ["university_id"]
+            isOneToOne: false
+            referencedRelation: "universities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       topics: {
         Row: {

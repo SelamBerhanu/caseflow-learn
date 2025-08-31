@@ -7,8 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, FileText, Search, Heart, Star, Filter } from "lucide-react";
+import { Upload, FileText, Search, Heart, Star, Filter, User } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
+import { ProfileManagement } from "@/components/ProfileManagement";
+import { useAuth } from "@/hooks/useAuth";
 
 const mockReports = [
   {
@@ -36,6 +38,7 @@ const mockReports = [
 ];
 
 export default function StudentDashboard() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("browse");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -47,7 +50,6 @@ export default function StudentDashboard() {
   };
 
   const handleSubmitReport = () => {
-    // Handle case report submission
     console.log("Submitting report:", selectedFile);
     setSelectedFile(null);
   };
@@ -64,10 +66,11 @@ export default function StudentDashboard() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="browse">Browse Reports</TabsTrigger>
               <TabsTrigger value="submit">Submit Report</TabsTrigger>
               <TabsTrigger value="my-reports">My Reports</TabsTrigger>
+              <TabsTrigger value="profile">Profile</TabsTrigger>
             </TabsList>
 
             <TabsContent value="browse" className="space-y-6">
@@ -250,6 +253,20 @@ export default function StudentDashboard() {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="profile" className="space-y-6">
+              <div className="max-w-2xl mx-auto">
+                {user ? (
+                  <ProfileManagement user={user} />
+                ) : (
+                  <Card>
+                    <CardContent className="p-6">
+                      <p className="text-center text-muted-foreground">Please log in to manage your profile.</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
             </TabsContent>
           </Tabs>
         </div>

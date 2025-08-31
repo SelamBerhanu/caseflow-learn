@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,27 +7,75 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GraduationCap, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function StudentAuth() {
   const navigate = useNavigate();
+  const { signIn, signUp, user } = useAuth();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [registerData, setRegisterData] = useState({
+    email: "",
+    password: "",
+    fullName: "",
+    studyYear: "",
+    university: ""
+  });
+
+  useEffect(() => {
+    if (user) {
+      navigate("/student-dashboard");
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate login
-    setTimeout(() => {
+    
+    const { error } = await signIn(loginData.email, loginData.password);
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Signed in successfully!"
+      });
       navigate("/student-dashboard");
-    }, 1000);
+    }
+    setIsLoading(false);
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate registration
-    setTimeout(() => {
-      navigate("/student-dashboard");
-    }, 1000);
+    
+    const { error } = await signUp(registerData.email, registerData.password, {
+      full_name: registerData.fullName,
+      role: 'student',
+      study_year: registerData.studyYear,
+      university: registerData.university
+    });
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Success", 
+        description: "Account created successfully! Please check your email for verification."
+      });
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -57,12 +105,24 @@ export default function StudentAuth() {
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="username">Username</Label>
-                    <Input id="username" type="text" required />
+                    <Label htmlFor="email">Email</Label>
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      value={loginData.email}
+                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                      required 
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" required />
+                    <Input 
+                      id="password" 
+                      type="password" 
+                      value={loginData.password}
+                      onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                      required 
+                    />
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? "Signing In..." : "Sign In"}
@@ -74,11 +134,21 @@ export default function StudentAuth() {
                 <form onSubmit={handleRegister} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="fullName">Full Name</Label>
-                    <Input id="fullName" type="text" required />
+                    <Input 
+                      id="fullName" 
+                      type="text" 
+                      value={registerData.fullName}
+                      onChange={(e) => setRegisterData({ ...registerData, fullName: e.target.value })}
+                      required 
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="studyYear">Study Year</Label>
-                    <Select required>
+                    <Select 
+                      value={registerData.studyYear} 
+                      onValueChange={(value) => setRegisterData({ ...registerData, studyYear: value })}
+                      required
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select study year" />
                       </SelectTrigger>
@@ -95,15 +165,33 @@ export default function StudentAuth() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="university">University</Label>
-                    <Input id="university" type="text" required />
+                    <Input 
+                      id="university" 
+                      type="text" 
+                      value={registerData.university}
+                      onChange={(e) => setRegisterData({ ...registerData, university: e.target.value })}
+                      required 
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="newUsername">Username</Label>
-                    <Input id="newUsername" type="text" required />
+                    <Label htmlFor="email">Email</Label>
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      value={registerData.email}
+                      onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                      required 
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="newPassword">Password</Label>
-                    <Input id="newPassword" type="password" required />
+                    <Input 
+                      id="newPassword" 
+                      type="password" 
+                      value={registerData.password}
+                      onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+                      required 
+                    />
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? "Creating Account..." : "Create Account"}

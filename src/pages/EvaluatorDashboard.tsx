@@ -9,8 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FileText, CheckCircle, Clock, TrendingUp, Award, MessageSquare, Download } from "lucide-react";
+import { FileText, CheckCircle, Clock, TrendingUp, Award, MessageSquare, Download, User } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
+import { ProfileManagement } from "@/components/ProfileManagement";
+import { useAuth } from "@/hooks/useAuth";
 
 const pendingReports = [
   {
@@ -56,6 +58,7 @@ const casesByTopic = {
 };
 
 export default function EvaluatorDashboard() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("pending");
   const [selectedReport, setSelectedReport] = useState<any>(null);
   const [evaluation, setEvaluation] = useState("");
@@ -162,10 +165,11 @@ export default function EvaluatorDashboard() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="pending">Pending Reports ({pendingReports.length})</TabsTrigger>
               <TabsTrigger value="evaluated">My Evaluations</TabsTrigger>
               <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+              <TabsTrigger value="profile">Profile</TabsTrigger>
             </TabsList>
 
             <TabsContent value="pending" className="space-y-6">
@@ -448,6 +452,20 @@ export default function EvaluatorDashboard() {
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="profile" className="space-y-6">
+              <div className="max-w-2xl mx-auto">
+                {user ? (
+                  <ProfileManagement user={user} />
+                ) : (
+                  <Card>
+                    <CardContent className="p-6">
+                      <p className="text-center text-muted-foreground">Please log in to manage your profile.</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
             </TabsContent>
           </Tabs>
         </div>
